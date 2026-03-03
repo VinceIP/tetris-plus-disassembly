@@ -5,7 +5,7 @@
 
 SECTION "ROM Bank $000", ROM0[$0150]
 
-Jump_000_0150:
+Jump_000_0150:          ; Entry point
     jp Jump_000_0204
 
 
@@ -247,10 +247,10 @@ Call_000_0201:
 
 
 Jump_000_0204:
-    call Call_000_1a1a
-    di
-    xor a
-    ldh [rIF], a
+    call Call_000_1a1a ; Gets interrupt state, stores it in $ff93 (?)
+    di  ; Disable interrupts
+    xor a ; should zero out A
+    ldh [rIF], a ; clear IF
 
 Call_000_020b:
     ldh [rIE], a
@@ -4317,23 +4317,23 @@ jr_000_19f0:
 
 Call_000_1a1a:
 Jump_000_1a1a:
-    ldh a, [rIE]
-    ldh [$ff93], a
-    res 0, a
+    ldh a, [rIE]    ; get which interrupts are enabled
+    ldh [$ff93], a  ; store current IE state in $ff93
+    res 0, a        ; turn off bit 0 of A
+jr_000_1a20:        ; start of loop
+    ldh a, [rLY]    ; get current scanline (LCDC Y)
+    cp $91          ; is current scanline 145?
+    jr nz, jr_000_1a20 ; wait until it is
 
-jr_000_1a20:
-    ldh a, [rLY]
-    cp $91
-    jr nz, jr_000_1a20
+    ; turn off the LCD
+    ldh a, [rLCDC] ; get LCD control value
+    and $7f        ; clear bit 7
+    ldh [rLCDC], a ; copy result back to LCDC
+    ldh a, [$ff93] ; get back original IE state
+    ldh [rIE], a   ; restore it
+    ret            ;return
 
-    ldh a, [rLCDC]
-    and $7f
-    ldh [rLCDC], a
-    ldh a, [$ff93]
-    ldh [rIE], a
-    ret
-
-
+    ; unreachable??
     ldh a, [rLCDC]
     or $80
     ldh [rLCDC], a
