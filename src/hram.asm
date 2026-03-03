@@ -1,0 +1,1 @@
+SECTION "HRAM", hram[$FF80]

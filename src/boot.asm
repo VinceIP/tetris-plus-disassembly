@@ -2,7 +2,7 @@
 
 SECTION "Interrupts and Header", ROM0[$0000]
 
-RST_00::                                        ; reset vector
+RST_00::                                        ; what is this?
     db $e1, $87, $ef, $2a, $66, $6f, $e9, $00
 
 RST_08::                                        ; reset vector
@@ -19,7 +19,7 @@ Jump_000_0009:
     nop
 
 RST_10::                                        ; reset vector
-    ld [$2000], a
+    ld [$2000], a ; rom bank switch
     ret
 
 
@@ -29,7 +29,7 @@ RST_10::                                        ; reset vector
     nop
 
 RST_18::                                        ; reset vector
-    ld [$2000], a
+    ld [$2000], a ; rom bank switch
     ret
 
 
@@ -335,7 +335,7 @@ Boot::
     nop
 
 Jump_000_0101:
-    jp Jump_000_0150
+    jp Enter
 
 ; ROM header
 HeaderLogo::

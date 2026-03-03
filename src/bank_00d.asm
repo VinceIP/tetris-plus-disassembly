@@ -9873,7 +9873,7 @@ jr_00d_7b83:
     cp b
     sbc a
     ld hl, sp-$05
-    call c, Call_000_020b
+    call c, Call_000_020b ;call if carry flag is set - call to soft reset?
     nop
     inc e
     ld b, e

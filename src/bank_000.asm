@@ -5,10 +5,12 @@
 
 SECTION "ROM Bank $000", ROM0[$0150]
 
-Jump_000_0150:          ; Entry point
-    jp Jump_000_0204
+Enter:          ; Entry point
+    jp Start
 
 
+; likely start of API table from here through $0201
+; handles bank switching to call subroutines from non-loaded ROM banks?
 Call_000_0153:
 Jump_000_0153:
     jp Jump_000_0351
@@ -104,7 +106,7 @@ Call_000_0195:
 
 
 Call_000_0198:
-    jp Jump_000_1a1a
+    jp Jump_DisableLCD
 
 
 Call_000_019b:
@@ -246,26 +248,26 @@ Call_000_0201:
     jp Jump_000_0588
 
 
-Jump_000_0204:
-    call Call_000_1a1a ; Gets interrupt state, stores it in $ff93 (?)
+Start:
+    call DisableLCD ; Turns off LCD when VBLANK occurs
     di  ; Disable interrupts
-    xor a ; should zero out A
+    xor a ; clear register A
     ldh [rIF], a ; clear IF
 
-Call_000_020b:
-    ldh [rIE], a
-    ld sp, $fffe
+Call_000_020b: ; soft reset entry point?? setup before main game loop?
+    ldh [rIE], a ; load A into IE
+    ld sp, $fffe ; load literal $fffe into SP
     ld a, $0a
-    ld [$0000], a
+    ld [$0000], a ; writes $a to MBC1 register to enable SRAM
     ld a, $01
-    ld [$2000], a
+    ld [$2000], a ; selects rom bank 1
     ld a, $00
-    ld [$4000], a
-    call Call_000_1a41
+    ld [$4000], a ; selects ram bank 0
+    call Call_000_1a41 ; a vram clearing routine
     call Call_000_1af4
     call Call_000_1b00
-    ld hl, $fe00
-    ld c, $00
+    ld hl, $fe00 ; store start address of OAM into HL
+    ld c, $00 ; clear out c
 
 jr_000_022d:
     ld [hl+], a
@@ -4315,8 +4317,8 @@ jr_000_19f0:
     jp hl
 
 
-Call_000_1a1a:
-Jump_000_1a1a:
+DisableLCD:
+Jump_DisableLCD:
     ldh a, [rIE]    ; get which interrupts are enabled
     ldh [$ff93], a  ; store current IE state in $ff93
     res 0, a        ; turn off bit 0 of A
@@ -4351,13 +4353,16 @@ jr_000_1a38:
     ret
 
 
-Call_000_1a41:
-    ld hl, $9bff
-    ld bc, $0400
+Call_000_1a41:  ;name me
+    ld hl, $9bff ; load $9bff into HL - probably a target VRAM address
+    ld bc, $0400 ; load $0400 into bc - probably some specific data on the cart - no, it's probably a counter
 
-jr_000_1a47:
-    ld a, $00
-    ld [hl-], a
+jr_000_1a47:    ;name me
+    ; looks like a loop to zero out VRAM starting at 9bff and working backwards
+    ld a, $00 ; clear A
+    ld [hl-], a ; zero out HL
+    ; what does this do?
+    ; dec the counter, repeat the loop until all VRAM is cleared from 9bff to 9bff - 0400
     dec bc
     ld a, b
     or c

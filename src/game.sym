@@ -46,7 +46,7 @@
 00:014c HeaderMaskROMVersion
 00:014d HeaderComplementCheck
 00:014e HeaderGlobalChecksum
-00:0150 Jump_000_0150
+00:0150 Enter
 00:0153 Call_000_0153
 00:0153 Jump_000_0153
 00:0156 Call_000_0156
@@ -107,8 +107,9 @@
 00:01fb Call_000_01fb
 00:01fe Call_000_01fe
 00:0201 Call_000_0201
-00:0204 Jump_000_0204
+00:0204 Start
 00:020b Call_000_020b
+00:021f Call_000_020b.new_label
 00:022d jr_000_022d
 00:0236 jr_000_0236
 00:026d Jump_000_026d
@@ -327,8 +328,8 @@
 00:19bb Call_000_19bb
 00:19ce jr_000_19ce
 00:19f0 jr_000_19f0
-00:1a1a Call_000_1a1a
-00:1a1a Jump_000_1a1a
+00:1a1a DisableLCD
+00:1a1a Jump_DisableLCD
 00:1a20 jr_000_1a20
 00:1a38 jr_000_1a38
 00:1a41 Call_000_1a41
