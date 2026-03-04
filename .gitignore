@@ -2,4 +2,5 @@
 *.o
 *.sav
 state.dump.asm
-.sym
+*.sym
+*.map
