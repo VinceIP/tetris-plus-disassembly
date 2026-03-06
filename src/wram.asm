@@ -70,6 +70,7 @@ wUnknown_c5a8:: ds 1 ; changes value depending on game mode highlighted on selec
 SECTION "Unknown_C5C9", wram0[$c5c9]
 wDMAReady:: ds 1 ; c5c9 is likely a half-byte flag signifying if the DMA routine has been
                  ; copied to wram
+                 ; or, just an "audio setup complete" flag?
 
 SECTION "Unknown_C5F0", wram0[$C5F0]
 
@@ -88,3 +89,6 @@ wScore_HundredsPlace:: ds 1
 ; Current score in base 10 (in classic tetris) - up to 10s place
 wScore_TensPlace:: ds 1
 
+; $ca00 - $cbff
+; likely workspace in ram for audio stuff
+SECTION "Audio", wram0[$ca00]

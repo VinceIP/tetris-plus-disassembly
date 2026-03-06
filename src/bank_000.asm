@@ -264,9 +264,11 @@ Call_000_020b: ; soft reset entry point?? setup before main game loop?
     ld [$2000], a ; selects rom bank 1
     ld a, $00
     ld [$4000], a ; selects ram bank 0
+    
     call ClearBGTileMap ; clear out vram from 97ff to 9bff
     call ClearOAMBuffer ; clear out oam buffer
-    call Call_000_1b00 ; clear remaining wram from c0a0 to e000
+    call ClearWRAM ; clear remaining wram from c0a0 to e000
+
     ld hl, $fe00 ; store start address of OAM into HL
     ld c, $00 ; loop counter
 
@@ -286,10 +288,10 @@ Call_000_020b: ; soft reset entry point?? setup before main game loop?
         jr nz, .clear_hram
 
     call CopyDMARoutineToHRAM
-    call Call_000_0321
+    call AudioInit
     ld a, $01
     ld [$c5c9], a
-    call $67f8
+    call $67f8 ; cross bank call, needs label
     ld a, $83
     ldh [rLCDC], a
     xor a
@@ -421,35 +423,42 @@ jr_000_030c:
     pop af
     reti
 
-
-Call_000_0318:
+; General-purpose memory clear routine \
+; arg0 - HL: start address \
+; arg1 - BC: how many bytes to clear
+MemZero:
 jr_000_0318:
     ld a, $00
-    ld [hl+], a
+    ld [hl+], a 
     dec bc
     ld a, b
-    or c
+    or c 
     jr nz, jr_000_0318
 
     ret
 
-
-Call_000_0321:
+; initialize audio
+AudioInit:
+    ; set args for MemZero - clear 512 bytes starting at $ca00
+    ; evidence that $ca00 - $cbff is a buffer for audio engine state
+    ; channel state, note data, timers, etc
     ld hl, $ca00
     ld bc, $0200
-    call Call_000_0318
+    call MemZero
+
+    ; setup audio
     ld a, $ff
-    ldh [rNR51], a
-    ld [$cb95], a
+    ldh [rNR51], a ; route all 4 audio channels to left and right output
+    ld [$cb95], a ; store rNR51 properties in ram
     ld a, $8f
-    ldh [rNR52], a
+    ldh [rNR52], a ; audio on, all channels active
     xor a
-    ldh [rNR12], a
-    ldh [rNR22], a
-    ldh [rNR32], a
-    ldh [rNR42], a
+    ldh [rNR12], a ; silence CH1 envelope
+    ldh [rNR22], a ; silence CH2 envelope
+    ldh [rNR32], a ; CH3 output level muted
+    ldh [rNR42], a ; silence CH4 envelope
     ld a, $77
-    ldh [rNR50], a
+    ldh [rNR50], a ; set L/R volume to max
     ret
 
 
@@ -561,7 +570,7 @@ Jump_000_03b1:
 
 
 Jump_000_03b8:
-    call Call_000_1b00
+    call ClearWRAM
     ld a, $05
     rst $18
     ret
@@ -4328,15 +4337,16 @@ jr_000_19f0:
     jp hl
 
 
+; Wait for vblank and disable LCD
 DisableLCD:
 Jump_DisableLCD:
     ldh a, [rIE]    ; get which interrupts are enabled
     ldh [$ff93], a  ; store current IE state in $ff93
     res 0, a        ; turn off bit 0 of A
-jr_000_1a20:        ; start of loop
-    ldh a, [rLY]    ; get current scanline (LCDC Y)
-    cp $91          ; is current scanline 145?
-    jr nz, jr_000_1a20 ; wait until it is
+    .wait_for_vblank:        ; start of loop
+        ldh a, [rLY]    ; get current scanline (LCDC Y)
+        cp $91          ; is current scanline 145?
+        jr nz, .wait_for_vblank ; wait until it is
 
     ; turn off the LCD
     ldh a, [rLCDC] ; get LCD control value
@@ -4346,7 +4356,8 @@ jr_000_1a20:        ; start of loop
     ldh [rIE], a   ; restore it
     ret            ;return
 
-    ; unreachable??
+    ; unreachable - copied to hram somewhere?
+    ; ORs rLCDC
     ldh a, [rLCDC]
     or $80
     ldh [rLCDC], a
@@ -4541,7 +4552,7 @@ ClearOAMBuffer:
 
 
     ; clear wram from $c0a0 to $e000
-Call_000_1b00:
+ClearWRAM:
     ld bc, $1f60 ; counter
     ld hl, $c0a0 ; start address
 

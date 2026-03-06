@@ -6646,7 +6646,7 @@ Jump_001_6723:
     ld [$c73d], a
     ret
 
-
+Call_001_67F8:
     ld a, $00
     ld [$c5f0], a
     ld [$c5f1], a
