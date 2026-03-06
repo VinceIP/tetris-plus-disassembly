@@ -1,12 +1,8 @@
 ; wram.asm
-SECTION "WRAM", wram0[$C000]
 
-;$C000 through C087 - holds high score data at high score screen?
-
-; $c0c0 through $c09f
+; $c000 through $c09f
 ; stores a buffer of OAM objects (sprites) and their attributes
-SECTION "wOamBuffer", wram0[$c0c0]
-; tetris block data struct?
+SECTION "wOamBuffer", wram0[$C000]
 
 SECTION "Block", wram0[$C0C2]
 
