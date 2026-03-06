@@ -263,9 +263,9 @@ Call_000_020b: ; soft reset entry point?? setup before main game loop?
     ld [$2000], a ; selects rom bank 1
     ld a, $00
     ld [$4000], a ; selects ram bank 0
-    call Call_000_1a41 ; a vram clearing routine
-    call Call_000_1af4
-    call Call_000_1b00
+    call Call_000_1a41 ; clear out vram from 97ff to 9bff
+    call Call_000_1af4 ; clear out (general use?) ram from c000 to c0a0
+    call Call_000_1b00 ; cler wram from c0a0 to e000
     ld hl, $fe00 ; store start address of OAM into HL
     ld c, $00 ; clear out c
 
@@ -4354,14 +4354,13 @@ jr_000_1a38:
 
 
 Call_000_1a41:  ;name me
-    ld hl, $9bff ; load $9bff into HL - probably a target VRAM address
-    ld bc, $0400 ; load $0400 into bc - probably some specific data on the cart - no, it's probably a counter
+    ld hl, $9bff ; start address
+    ld bc, $0400 ; loop counter
 
-jr_000_1a47:    ;name me
+jr_000_1a47:
     ; looks like a loop to zero out VRAM starting at 9bff and working backwards
-    ld a, $00 ; clear A
-    ld [hl-], a ; zero out HL
-    ; what does this do?
+    ld a, $00
+    ld [hl-], a
     ; dec the counter, repeat the loop until all VRAM is cleared from 9bff to 9bff - 0400
     dec bc
     ld a, b
@@ -4516,10 +4515,12 @@ jr_000_1aee:
     ret
 
 
+; zero out chunk of ram from c000 to c0a0
 Call_000_1af4:
-    ld b, $a0
+    
+    ld b, $a0 ; loop counter - 160
     ld a, $00
-    ld hl, $c000
+    ld hl, $c000 ; start address - is this a general use/animation timer block of ram?
 
 jr_000_1afb:
     ld [hl+], a
@@ -4529,9 +4530,10 @@ jr_000_1afb:
     ret
 
 
+    ; clear wram from $c0a0 to $e000
 Call_000_1b00:
-    ld bc, $1f60
-    ld hl, $c0a0
+    ld bc, $1f60 ; counter
+    ld hl, $c0a0 ; start address
 
 jr_000_1b06:
     ld a, $00

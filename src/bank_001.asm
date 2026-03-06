@@ -4200,7 +4200,7 @@ Call_001_59c1:
     push hl
     push de
     push bc
-    ld hl, $c5f5
+    ld hl, wScore_TensPlace
     ld de, $c5f8
     ld a, [hl]
     ld b, a
@@ -4208,7 +4208,7 @@ Call_001_59c1:
     add b
     daa
     ld [hl], a
-    ld hl, $c5f4
+    ld hl, wScore_HundredsPlace
     ld de, $c5f7
     ld a, [hl]
     ld b, a
@@ -4216,7 +4216,7 @@ Call_001_59c1:
     adc b
     daa
     ld [hl], a
-    ld hl, $c5f3
+    ld hl, wScore_HundredThousandsPlace
     ld de, $c5f6
     ld a, [hl]
     ld b, a
@@ -4226,7 +4226,7 @@ Call_001_59c1:
     ld [hl], a
     jr nc, jr_001_59f4
 
-    ld hl, $c5f3
+    ld hl, wScore_HundredThousandsPlace
     ld a, $99
     ld [hl+], a
     ld [hl+], a
@@ -4235,7 +4235,7 @@ Call_001_59c1:
 
 jr_001_59f4:
     ld b, $00
-    ld a, [$c5f3]
+    ld a, [wScore_HundredThousandsPlace]
     swap a
     and $0f
     ld hl, $5ab8
@@ -4255,7 +4255,7 @@ jr_001_5a0d:
 jr_001_5a0f:
     ld hl, $d0ed
     ld [hl], a
-    ld a, [$c5f3]
+    ld a, [wScore_HundredThousandsPlace]
     and $0f
     ld hl, $5ab8
     ld d, $00
@@ -4280,7 +4280,7 @@ jr_001_5a28:
 jr_001_5a30:
     ld hl, $d0ee
     ld [hl], a
-    ld a, [$c5f4]
+    ld a, [wScore_HundredsPlace]
     swap a
     and $0f
     ld hl, $5ab8
@@ -4306,7 +4306,7 @@ jr_001_5a4b:
 jr_001_5a53:
     ld hl, $d0ef
     ld [hl], a
-    ld a, [$c5f4]
+    ld a, [wScore_HundredsPlace]
     and $0f
     ld hl, $5ab8
     ld d, $00
@@ -4331,7 +4331,7 @@ jr_001_5a6c:
 jr_001_5a74:
     ld hl, $d0f0
     ld [hl], a
-    ld a, [$c5f5]
+    ld a, [wScore_TensPlace]
     swap a
     and $0f
     ld hl, $5ab8
@@ -4357,7 +4357,7 @@ jr_001_5a8f:
 jr_001_5a97:
     ld hl, $d0f1
     ld [hl], a
-    ld a, [$c5f5]
+    ld a, [wScore_TensPlace]
     and $0f
     ld hl, $5ab8
     ld d, $00
