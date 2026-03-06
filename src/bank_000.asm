@@ -291,39 +291,41 @@ Call_000_020b: ; soft reset entry point?? setup before main game loop?
     call AudioInit
     ld a, $01
     ld [$c5c9], a
-    call $67f8 ; cross bank call, needs label
+    call ClearWRAM_BGPalleteData
     ld a, $83
-    ldh [rLCDC], a
+    ldh [rLCDC], a ; re-enable lcd, enable objects
     xor a
-    ldh [rIF], a
+    ldh [rIF], a ; clear pending interrupts
     ld a, $0d
-    ldh [rIE], a
-    ei
-    call Call_000_21d0
-    ld a, $07
-    rst $10
-    ld a, $00
-    ld [$c67f], a
-    call $434e
-    jp nc, Jump_000_026d
-
+    ldh [rIE], a ; enable vblank, timer, serial interrupts
+    ei; enable interrupts
+    call InitSerialLink ; setup serial transfer - test for connected game boy?
+    ld a, $07 ; set arg for rst 10
+    rst $10 ; rom bank switch to 07
+    ld a, $00 
+    ld [wSGBMode], a ; pre-emptive set SGB flag to attached
+    call CheckForSGB ; check if SGB is attached
+    jp nc, Jump_000_026d ; if SGB found, jp here
+    ;otherwise...
     ld a, $01
-    ld [$c67f], a
-    call $4000
+    ld [wSGBMode], a ; set flag - no SGB found
+    call $4000 ; ??
 
 Jump_000_026d:
-    ld a, $01
+    ld a, $01 ;reselect rom bank 1
     rst $18
 
 Jump_000_0270:
+    ; unclear
     ld a, [$c5db]
     inc a
     ld [$c5db], a
+    ;
     ldh a, [hInputHeld]
-    and $0f
+    and $0f ; check for any button press?
     cp $0f
     jp nz, Jump_000_0298
-
+    ; switch statement? which state to put the game in?
     ld a, [wGameState]
     cp $00
     jr z, jr_000_0298
@@ -378,11 +380,11 @@ Call_000_02d3:
     ldh [rSCX], a
     ld a, [$c5ed]
     ldh [rSCY], a
-    ld a, [$c5f0]
+    ld a, [wBGP]
     ldh [rBGP], a
-    ld a, [$c5f1]
+    ld a, [wOBP0]
     ldh [rOBP0], a
-    ld a, [$c5f2]
+    ld a, [wOBP1]
     ldh [rOBP1], a
     ret
 
@@ -523,7 +525,7 @@ Jump_000_0381:
     ld a, $01
     rst $10
     pop af
-    call $67f8
+    call ClearWRAM_BGPalleteData
     ld a, $05
     rst $18
     ret
@@ -972,7 +974,7 @@ Jump_000_0566:
 
 
 Jump_000_056d:
-    call Call_000_21d0
+    call InitSerialLink
     ld a, $05
     rst $18
     ret
@@ -1112,7 +1114,7 @@ Jump_000_0600:
     db $26, $06, $68, $06, $bb, $06, $f8, $06, $4e, $07, $8d, $07, $d8, $07, $12, $08
     db $5f, $08
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_000_062f
 
@@ -1536,7 +1538,7 @@ Jump_000_08c2:
     ld c, $d6
     db $0e
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
 
 Call_000_08f0:
@@ -2058,7 +2060,7 @@ jr_000_0c14:
     or a
     ret z
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_000_0c30
 
@@ -2237,7 +2239,7 @@ jr_000_0d3a:
     cp $04
     jr z, jr_000_0d79
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_000_0d4d
 
@@ -2266,7 +2268,7 @@ jr_000_0d4d:
 
 
 jr_000_0d79:
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_000_0d82
 
@@ -2419,7 +2421,7 @@ jr_000_0dc4:
     ret
 
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_000_0e7f
 
@@ -2708,7 +2710,7 @@ jr_000_0fd9:
     or a
     ret nz
 
-    call $67f8
+    call ClearWRAM_BGPalleteData
     ld a, $15
     call Call_000_1c56
     ld a, $16
@@ -2721,7 +2723,7 @@ Jump_000_1001:
     ld [$c5ed], a
     ld [$c5a3], a
     call Call_000_1b0f
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_000_1017
 
@@ -2887,7 +2889,7 @@ Jump_000_1111:
     or a
     ret nz
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_000_112c
 
@@ -3763,7 +3765,7 @@ Call_000_16d0:
 jr_000_16da:
     ld a, $04
     ldh [$ffa1], a
-    call $67f8
+    call ClearWRAM_BGPalleteData
     ld a, [$c5c4]
     inc a
     cp $0a
@@ -5868,15 +5870,16 @@ Jump_000_21c1:
     pop af
     reti
 
-
-Call_000_21d0:
+; looks like a ping to another game boy via link cable?
+InitSerialLink:
     ld a, $00
     ld [$d602], a
     ld a, $dd
-    ldh [rSB], a
-    ld [$d606], a
+    ldh [rSB], a ; sets a specific bit config into the serial byte?
+    ld [$d606], a ; probably wram copy for serial byte
     ld a, $80
-    ldh [rSC], a
+    ldh [rSC], a ; enable transfer
+    ; clear out a bunch of serial-related bytes?
     xor a
     ld [$d600], a
     ld [$d605], a
@@ -5894,7 +5897,7 @@ Call_000_21d0:
     ld [$d63c], a
     ret
 
-
+; trace me
     xor a
     ldh [rSB], a
     ld [$d606], a

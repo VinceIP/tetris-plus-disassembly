@@ -57,7 +57,7 @@ SECTION "ROM Bank $005", ROMX[$4000], BANK[$5]
     cp $01
     jr z, jr_005_4068
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_4057
 
@@ -107,7 +107,7 @@ Jump_005_4078:
     jp Jump_000_0165
 
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_409e
 
@@ -187,7 +187,7 @@ jr_005_40f9:
     ret
 
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_4117
 
@@ -247,7 +247,7 @@ jr_005_4117:
 
     db $6f, $41, $93, $41, $b6, $41, $a3, $42
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_4178
 
@@ -489,7 +489,7 @@ jr_005_42d4:
     db $8d, $45, $81, $5a, $c2, $46, $92, $47, $bc, $47, $03, $48, $12, $48, $2c, $48
     db $81, $5a, $55, $48, $74, $48, $85, $48, $81, $5a, $a4, $48, $f6, $48
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_4304
 
@@ -863,7 +863,7 @@ jr_005_4567:
     ret
 
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_4596
 
@@ -1236,7 +1236,7 @@ Jump_005_4763:
     cp $04
     jr z, jr_005_47e1
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_47cc
 
@@ -1254,7 +1254,7 @@ jr_005_47cc:
 
 
 jr_005_47e1:
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_47ea
 
@@ -1360,7 +1360,7 @@ jr_005_4863:
     ret
 
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_488e
 
@@ -1491,7 +1491,7 @@ jr_005_4912:
     ld d, l
     ld a, a
     ld d, l
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_4955
 
@@ -1581,7 +1581,7 @@ jr_005_49b7:
     dec a
     jr z, jr_005_4a14
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_49ee
 
@@ -1606,7 +1606,7 @@ jr_005_49ee:
 
 
 jr_005_4a14:
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_4a1d
 
@@ -1634,7 +1634,7 @@ jr_005_4a1d:
 
 
 jr_005_4a46:
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_4a4f
 
@@ -1845,7 +1845,7 @@ jr_005_4b95:
     or a
     ret z
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_4ba6
 
@@ -2435,7 +2435,7 @@ jr_005_4eba:
 
 
 jr_005_4f13:
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_4f1c
 
@@ -3569,7 +3569,7 @@ jr_005_557e:
     sub l
     ld e, b
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jp z, Jump_005_55b5
 
@@ -3748,7 +3748,7 @@ Jump_005_56d0:
     db $08
     nop
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jp z, Jump_005_56e2
 
@@ -3897,7 +3897,7 @@ Jump_005_57c5:
     or a
     ret z
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jp z, Jump_005_57d7
 
@@ -4084,7 +4084,7 @@ jr_005_588e:
 
     ld e, c
     ld hl, sp+$59
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_58fa
 
@@ -4204,7 +4204,7 @@ jr_005_59ab:
     ret
 
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_59c0
 
@@ -4302,7 +4302,7 @@ jr_005_59f0:
     ret z
 
     call Call_000_0174
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     push af
     call Call_000_01f5
     call Call_000_016e
@@ -4316,7 +4316,7 @@ jr_005_59f0:
     ei
     call Call_000_01f8
     pop af
-    ld [$c67f], a
+    ld [wSGBMode], a
     ld a, $01
     ld [wGameState], a
     xor a
@@ -5800,7 +5800,7 @@ jr_005_631f:
     and c
     ld h, a
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_6674
 
@@ -6118,7 +6118,7 @@ jr_005_6856:
     ret
 
 
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_6868
 
@@ -6231,7 +6231,7 @@ jr_005_68e4:
     ld [wGameState], a
     ld a, $01
     ld [$c5a2], a
-    ld a, [$c67f]
+    ld a, [wSGBMode]
     or a
     jr z, jr_005_6924
 

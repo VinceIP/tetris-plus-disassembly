@@ -72,7 +72,11 @@ wDMAReady:: ds 1 ; c5c9 is likely a half-byte flag signifying if the DMA routine
                  ; copied to wram
                  ; or, just an "audio setup complete" flag?
 
-SECTION "Unknown_C5F0", wram0[$C5F0]
+; 3 bytes track background pallet data
+SECTION "wBackgroundPalletData", wram0[$C5F0]
+wBGP:: ds 1
+wOBP0:: ds 1
+wOBP1:: ds 1
 
 SECTION "Score", wram0[$C5F3]
 
@@ -88,6 +92,11 @@ wScore_HundredsPlace:: ds 1
 ; c5f5
 ; Current score in base 10 (in classic tetris) - up to 10s place
 wScore_TensPlace:: ds 1
+
+SECTION "SGBFlag", wram0[$c67f]
+; 0 - SGB attached \
+; 1 - SGB not attached
+wSGBMode:: ds 1
 
 ; $ca00 - $cbff
 ; likely workspace in ram for audio stuff

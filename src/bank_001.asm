@@ -6646,26 +6646,29 @@ Jump_001_6723:
     ld [$c73d], a
     ret
 
-Call_001_67F8:
+    ; clear buffered bg pallete data values in wram \
+    ; bgp = 0, obp0 = 0, obp1 = 0
+ClearWRAM_BGPalleteData:
     ld a, $00
-    ld [$c5f0], a
-    ld [$c5f1], a
-    ld [$c5f2], a
+    ld [wBGP], a
+    ld [wOBP0], a
+    ld [wOBP1], a
     ret
 
-
+    ; needs labels - looks like more subroutines related to fading in/out everything on screen
+    ; by manipulating bg palletes
     ld a, $ff
-    ld [$c5f0], a
-    ld [$c5f1], a
-    ld [$c5f2], a
+    ld [wBGP], a
+    ld [wOBP0], a
+    ld [wOBP1], a
     ret
 
 
     ld a, $e4
-    ld [$c5f0], a
-    ld [$c5f1], a
+    ld [wBGP], a
+    ld [wOBP0], a
     ld a, $d2
-    ld [$c5f2], a
+    ld [wOBP1], a
     ret
 
 
@@ -6710,13 +6713,13 @@ jr_001_683a:
     ld e, a
     add hl, de
     ld a, [hl]
-    ld [$c5f0], a
-    ld [$c5f1], a
+    ld [wBGP], a
+    ld [wOBP0], a
     ld d, $00
     ld e, $05
     add hl, de
     ld a, [hl]
-    ld [$c5f2], a
+    ld [wOBP1], a
     ld a, [$c66c]
     inc a
     ld [$c66c], a

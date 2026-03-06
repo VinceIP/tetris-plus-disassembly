@@ -316,32 +316,36 @@ jr_007_42c4:
 
     ret
 
-
+; SGB packet transmitter o.O
+; investigate later
 Call_007_42d2:
-    ld a, [hl]
-    and $07
-    ret z
+    ld a, [hl] ; $89 here in rom
+    and $07 ; 89 & 07 = 01
+    ret z ; ret early if result is 0?
 
-    ld b, a
+    ld b, a ; copy result of above AND to B
     ld c, $00
 
+    ; setup of loop
 jr_007_42d9:
-    push bc
+    push bc ; save state of bc
     ld a, $00
-    ldh [c], a
+    ldh [c], a ; set rP1 LOW
     ld a, $30
     ldh [c], a
     ld b, $10
 
+    ; loop i
 jr_007_42e2:
     ld e, $08
     ld a, [hl+]
     ld d, a
 
+    ; loop j
 jr_007_42e6:
     bit 0, d
     ld a, $10
-    jr nz, jr_007_42ee
+    jr nz, jr_007_42ee ; skip next load if not zero
 
     ld a, $20
 
@@ -351,10 +355,11 @@ jr_007_42ee:
     ldh [c], a
     rr d
     dec e
-    jr nz, jr_007_42e6
+    jr nz, jr_007_42e6 ; repeat loop j if not zero
 
     dec b
-    jr nz, jr_007_42e2
+    jr nz, jr_007_42e2 ; repeat loop i if not zero
+    ; end loop
 
     ld a, $20
     ldh [c], a
@@ -364,7 +369,7 @@ jr_007_42ee:
     dec b
     ret z
 
-    call Call_007_43c3
+    call Call_007_43c3 ; delay, then restart loop?
     jr jr_007_42d9
 
 Call_007_4308:
@@ -418,15 +423,17 @@ jr_007_4345:
 
     ret
 
-
-    ld hl, $43b3
+; check for presence of SGB
+CheckForSGB:
+    ld hl, $43b3 ;arg for next call?
     call Call_007_42d2
     call Call_007_43c3
-    ldh a, [rP1]
-    and $03
+    ldh a, [rP1] ; read back rP1 after sending packet to SGB
+    and $03 ; check response
     cp $03
     jr nz, jr_007_4398
 
+    ; weird SGB check pulsing
     ld a, $20
     ldh [rP1], a
     ldh a, [rP1]
@@ -449,9 +456,9 @@ jr_007_4345:
     ldh a, [rP1]
     and $03
     cp $03
-    jr nz, jr_007_4398
+    jr nz, jr_007_4398 ; not sure why
 
-    ld hl, $43a3
+    ld hl, $43a3 ; SGB found, transmit another packet
     call Call_007_42d2
     call Call_007_43c3
     sub a
@@ -469,10 +476,12 @@ jr_007_4398:
     db $89, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
     db $89, $01, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
 
+;probably a time killer func
 Call_007_43c3:
     ld de, $1b58
 
 jr_007_43c6:
+
     nop
     nop
     nop
@@ -483,7 +492,7 @@ jr_007_43c6:
 
     ret
 
-
+    ; label me - data?
     ld d, c
     nop
     nop
