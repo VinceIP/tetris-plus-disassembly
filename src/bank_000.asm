@@ -254,6 +254,7 @@ Start:
     xor a ; clear register A
     ldh [rIF], a ; clear IF
 
+    ; todo - track down what calls this
 Call_000_020b: ; soft reset entry point?? setup before main game loop?
     ldh [rIE], a ; load A into IE
     ld sp, $fffe ; load literal $fffe into SP
@@ -263,26 +264,28 @@ Call_000_020b: ; soft reset entry point?? setup before main game loop?
     ld [$2000], a ; selects rom bank 1
     ld a, $00
     ld [$4000], a ; selects ram bank 0
-    call Call_000_1a41 ; clear out vram from 97ff to 9bff
-    call Call_000_1af4 ; clear out (general use?) ram from c000 to c0a0
-    call Call_000_1b00 ; cler wram from c0a0 to e000
+    call ClearBGTileMap ; clear out vram from 97ff to 9bff
+    call ClearOAMBuffer ; clear out oam buffer
+    call Call_000_1b00 ; clear remaining wram from c0a0 to e000
     ld hl, $fe00 ; store start address of OAM into HL
-    ld c, $00 ; clear out c
+    ld c, $00 ; loop counter
 
-jr_000_022d:
-    ld [hl+], a
-    dec c
-    jr nz, jr_000_022d
+    ; clear out OAM
+    .clear_oam:
+        ld [hl+], a
+        dec c
+        jr nz, .clear_oam
 
-    ld hl, $ff80
-    ld c, $7f
+        ld hl, $ff80 ; hram start address
+        ld c, $7f
 
-jr_000_0236:
-    ld [hl+], a
-    dec c
-    jr nz, jr_000_0236
+    .clear_hram:
+        ; clear out hram
+        ld [hl+], a
+        dec c
+        jr nz, .clear_hram
 
-    call Call_000_19a3
+    call CopyDMARoutineToHRAM
     call Call_000_0321
     ld a, $01
     ld [$c5c9], a
@@ -551,7 +554,7 @@ Jump_000_03a3:
 
 
 Jump_000_03b1:
-    call Call_000_1af4
+    call ClearOAMBuffer
     ld a, $05
     rst $18
     ret
@@ -953,7 +956,7 @@ Jump_000_055c:
 
 
 Jump_000_0566:
-    call Call_000_1a41
+    call ClearBGTileMap
     ld a, $05
     rst $18
     ret
@@ -4227,21 +4230,29 @@ Call_000_1971:
     ret
 
 
-Call_000_19a3:
-    ld c, $80
-    ld b, $0a
-    ld hl, $19b1
+    ; copy an OAM DMA transfer routine from program rom to hram
+CopyDMARoutineToHRAM:
+    ld c, $80 ; hram start offset ($ff80)
+    ld b, $0a ; loop counter
+    ld hl, $19b1 ; rom data start index
 
 jr_000_19aa:
-    ld a, [hl+]
-    ldh [c], a
-    inc c
-    dec b
+    ld a, [hl+] ; get data from rom index, increase i
+    ldh [c], a ; store data in hram offset
+    inc c ; move to next hram offset
+    dec b ; dec counter
     jr nz, jr_000_19aa
 
     ret
 
-
+    ; OAM DMA routine
+    ; starts DMA transfer from ROM to RAM
+    ; $3e, $c0  ld a, $c0
+    ; $e0, $46  ldh [rDMA], a
+    ; $3e, $28  ld a, $28
+    ; $3d       dec a
+    ; $20, $fd  jr nz, -3 (back to dec a)
+    ; $c9       ret
     db $3e, $c0, $e0, $46, $3e, $28, $3d, $20, $fd, $c9
 
 Call_000_19bb:
@@ -4352,16 +4363,15 @@ jr_000_1a38:
 
     ret
 
-
-Call_000_1a41:  ;name me
+; Clears BG Tilemap from VRAM (words backwards from $9bff to $9800)
+ClearBGTileMap:
     ld hl, $9bff ; start address
     ld bc, $0400 ; loop counter
 
 jr_000_1a47:
-    ; looks like a loop to zero out VRAM starting at 9bff and working backwards
+    ; zero out VRAM starting at 9bff and work backwards
     ld a, $00
     ld [hl-], a
-    ; dec the counter, repeat the loop until all VRAM is cleared from 9bff to 9bff - 0400
     dec bc
     ld a, b
     or c
@@ -4515,19 +4525,19 @@ jr_000_1aee:
     ret
 
 
-; zero out chunk of ram from c000 to c0a0
-Call_000_1af4:
+; clear out the OAM buffer in work ram
+ClearOAMBuffer:
     
     ld b, $a0 ; loop counter - 160
     ld a, $00
-    ld hl, $c000 ; start address - is this a general use/animation timer block of ram?
+    ld hl, $c000 ; start address of buffer
 
-jr_000_1afb:
-    ld [hl+], a
-    dec b
-    jr nz, jr_000_1afb
+    .loop:
+        ld [hl+], a
+        dec b
+        jr nz, .loop
 
-    ret
+        ret
 
 
     ; clear wram from $c0a0 to $e000
@@ -4535,13 +4545,13 @@ Call_000_1b00:
     ld bc, $1f60 ; counter
     ld hl, $c0a0 ; start address
 
-jr_000_1b06:
-    ld a, $00
-    ld [hl+], a
-    dec bc
-    ld a, b
-    or c
-    jr nz, jr_000_1b06
+    .loop:
+        ld a, $00
+        ld [hl+], a
+        dec bc
+        ld a, b
+        or c
+        jr nz, .loop
 
     ret
 

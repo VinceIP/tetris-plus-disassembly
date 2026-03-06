@@ -3,7 +3,9 @@ SECTION "WRAM", wram0[$C000]
 
 ;$C000 through C087 - holds high score data at high score screen?
 
-SECTION "Unknown_c0c0", wram0[$c0c0]
+; $c0c0 through $c09f
+; stores a buffer of OAM objects (sprites) and their attributes
+SECTION "wOamBuffer", wram0[$c0c0]
 ; tetris block data struct?
 
 SECTION "Block", wram0[$C0C2]
@@ -68,6 +70,10 @@ wUnknown_c5a8:: ds 1 ; changes value depending on game mode highlighted on selec
                      ; 3 - edit
                      ; 4 - option
                      ; needs a good name. is it used elsewhere?
+
+SECTION "Unknown_C5C9", wram0[$c5c9]
+wDMAReady:: ds 1 ; c5c9 is likely a half-byte flag signifying if the DMA routine has been
+                 ; copied to wram
 
 SECTION "Unknown_C5F0", wram0[$C5F0]
 
