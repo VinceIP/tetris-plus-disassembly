@@ -1233,7 +1233,7 @@ Call_000_06de:
 
 Call_000_0700:
     ld [$c5ac], a
-    ld hl, $c5f3
+    ld hl, wScore_HundredThousandsPlace
     ld [hl+], a
     ld [hl+], a
     ld [hl+], a
@@ -1294,7 +1294,7 @@ Jump_000_0745:
     ld a, $20
     ld [hl], a
     ld a, [$c83d]
-    ld [$c0fd], a
+    ld [wCurrentLevel], a
     ld a, $ff
     ld [$c83f], a
     call $59c1
@@ -6123,28 +6123,35 @@ jr_000_2317:
     ret
 
 
+    ; game object update/render dispatcher
+    ; iterates over 25 game objects, each 32 bytes ($20) long from $c0a0 - $c39f
+    ; notes -
+    ; object struct probably looks like this -
+    ; offset + 2 = x pos
+    ; offset + 3 = y pos
+    ; offset + 5 = type id
 Call_000_2321:
-    ld de, $c0a0
-    ld b, $19
+    ld de, $c0a0 ; base of object array
+    ld b, $19 ; b = 25. loop counter
 
 jr_000_2326:
     ld hl, $0005
-    add hl, de
-    ld a, [hl]
-    ld hl, $2353
+    add hl, de ; HL = array base + 5 - read offset 5 of current object
+    ld a, [hl] ; get object type byte
+    ld hl, $2353 ; $2535 = dispatch table base
     push de
     ld d, $00
     ld e, a
     sla e
-    rl d
-    add hl, de
+    rl d ; DE = A * 2
+    add hl, de ; HL = address of table
     ld a, [hl+]
     ld h, [hl]
     ld l, a
     pop de
     push de
     push bc
-    jp hl
+    jp hl ; dispatch to handler
 
 
 Jump_000_233e:
@@ -6164,40 +6171,18 @@ Jump_000_233e:
     ld [$c5ac], a
     ret
 
-
+    ; what is this data?
+    ; it's a jump table
+    ; $2433 seems to be "do nothing"/skip
     db $33, $24, $37, $24, $6d, $24, $b1, $24, $59, $25, $a2, $25, $30, $26, $5b, $26
     db $78, $26, $f2, $26, $64, $27
 
-    inc sp
-    inc h
-    inc sp
-    inc h
-    inc sp
-    inc h
-    inc sp
-    inc h
-    inc sp
-    inc h
+    db $33, $24, $33, $24, $33, $24, $33, $24, $33, $24
 
     db $09, $28, $2f, $28, $45, $28
 
-    inc sp
-    inc h
-    inc sp
-    inc h
-    inc sp
-    inc h
-    inc sp
-    inc h
-    inc sp
-    inc h
-    inc sp
-    inc h
-    inc sp
-    inc h
-    inc sp
-    inc h
-    inc sp
+    db $33, $24, $33, $24, $33, $24, $33, $24, $33, $24, $33, $24, $33, $24, $33, $24
+    db $33
 
 jr_000_238a:
     inc h

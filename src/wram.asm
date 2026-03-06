@@ -3,21 +3,35 @@ SECTION "WRAM", wram0[$C000]
 
 ;$C000 through C087 - holds high score data at high score screen?
 
-SECTION "Unknown_C0C0", wram0[$C0C2]
+SECTION "Unknown_c0c0", wram0[$c0c0]
+; tetris block data struct?
 
+SECTION "Block", wram0[$C0C2]
+
+; c0c2 \
 ; Column (X) position of the current active block \
 ; From 01 to 08, left to right \
 ; Starts at 5
 wBlockColumnIndex:: ds 1
 
+; c0c3 \
 ; Row (Y) position of the current active block \
 ; From 01 to 0F, top to bottom \
 ; Starts at 1
 wBlockRowIndex:: ds 1
 
+; c0c4 \
+; 1 of possible 4 block orientations, 00 through 03. \
+; Each block type always has 4 separate indexes, even if it has\
+; less than 4 possible orientations. Even square blocks.
+wBlockRotationindex: ds 1
+
 SECTION "Unknown_C0FD", wram0[$C0FD]
+; c0fd \
 ; Current level (observed on classic tetris mode)
 wCurrentLevel:: ds 1
+
+; c0fe \
 ; Value of the level ticker that determines when level increases \
 ; Has a visual representation of left/right of play field in classic tetris
 wLevelTicker:: ds 1
@@ -59,13 +73,16 @@ SECTION "Unknown_C5F0", wram0[$C5F0]
 
 SECTION "Score", wram0[$C5F3]
 
+; c5f3
 ; Current score in bas 10 (in classic tetris) - up to 100,000s place \
 ; Caps out a 999,999 and stops counting there
 wScore_HundredThousandsPlace:: ds 1
 
+; c5f4
 ; Current score in base 10 (in classic tetris) - up to 1000s place
 wScore_HundredsPlace:: ds 1
 
+; c5f5
 ; Current score in base 10 (in classic tetris) - up to 10s place
 wScore_TensPlace:: ds 1
 

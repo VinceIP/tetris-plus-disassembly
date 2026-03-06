@@ -90,7 +90,7 @@ Jump_005_4078:
     ret
 
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     ret z
 
@@ -181,7 +181,7 @@ jr_005_40f9:
     xor a
     ld [$c5ed], a
     ld a, $01
-    ld [$c5a1], a
+    ld [wGameState], a
     xor a
     ld [$c5a2], a
     ret
@@ -223,7 +223,7 @@ jr_005_4117:
     ret z
 
     ld a, $01
-    ld [$c5a1], a
+    ld [wGameState], a
     xor a
     ld [$c5a2], a
     ret
@@ -311,7 +311,7 @@ jr_005_4178:
     call Call_000_0153
 
 Jump_005_41ea:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $08
     jr z, jr_005_4201
 
@@ -325,7 +325,7 @@ Jump_005_41ea:
 
 
 jr_005_4201:
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     and $04
     jr nz, jr_005_423c
 
@@ -333,7 +333,7 @@ jr_005_4201:
     or a
     ret nz
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     or a
     ret z
 
@@ -344,7 +344,7 @@ jr_005_4201:
     add hl, de
     ld a, [hl]
     ld b, a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     cp b
     jr z, jr_005_4227
 
@@ -374,7 +374,7 @@ jr_005_423c:
     or a
     ret nz
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     or a
     ret z
 
@@ -385,7 +385,7 @@ jr_005_423c:
     add hl, de
     ld a, [hl]
     ld b, a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     cp b
     jr z, jr_005_425c
 
@@ -446,7 +446,7 @@ jr_005_428e:
     ret z
 
     ld a, $02
-    ld [$c5a1], a
+    ld [wGameState], a
     xor a
     ld [$c5a2], a
     jp Jump_005_61eb
@@ -521,7 +521,7 @@ jr_005_4304:
     jp Jump_000_0165
 
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr z, jr_005_4357
 
@@ -548,7 +548,7 @@ Jump_005_434f:
 
 jr_005_4357:
     call Call_005_5d14
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $40
     jr z, jr_005_4373
 
@@ -563,7 +563,7 @@ jr_005_4357:
 
 
 jr_005_4373:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $80
     ret z
 
@@ -710,11 +710,11 @@ Jump_005_4470:
     ret
 
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $02
     jr nz, jr_005_4488
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr z, jr_005_449d
 
@@ -734,7 +734,7 @@ Jump_005_449a:
 
 jr_005_449d:
     call Call_005_5d43
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $10
     jr z, jr_005_44b9
 
@@ -749,7 +749,7 @@ jr_005_449d:
 
 
 jr_005_44b9:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $20
     ret z
 
@@ -805,7 +805,7 @@ Jump_005_450f:
     ret
 
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $02
     jr z, jr_005_453c
 
@@ -819,7 +819,7 @@ Jump_005_450f:
 
 
 jr_005_453c:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     ret z
 
@@ -1066,7 +1066,7 @@ jr_005_46b0:
 
 jr_005_46d5:
     call Call_005_4763
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr z, jr_005_46eb
 
@@ -1083,7 +1083,7 @@ jr_005_46eb:
     ret z
 
     call Call_005_5d8f
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $10
     jr z, jr_005_470e
 
@@ -1101,7 +1101,7 @@ jr_005_46eb:
 
 
 jr_005_470e:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $20
     ret z
 
@@ -1285,7 +1285,7 @@ Jump_005_47f4:
     jp Jump_000_0165
 
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $0f
     jr nz, jr_005_4820
 
@@ -1329,7 +1329,7 @@ Jump_005_4848:
     jp Jump_000_0165
 
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $0f
     jr nz, jr_005_4863
 
@@ -1354,7 +1354,7 @@ jr_005_4863:
     ret z
 
     ld a, $06
-    ld [$c5a1], a
+    ld [wGameState], a
     xor a
     ld [$c5a2], a
     ret
@@ -1378,7 +1378,7 @@ jr_005_488e:
     jp Jump_000_0165
 
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr z, jr_005_48b7
 
@@ -1391,7 +1391,7 @@ jr_005_488e:
 
 jr_005_48b7:
     call Call_005_5ceb
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $40
     jr z, jr_005_48d9
 
@@ -1410,7 +1410,7 @@ jr_005_48b7:
 
 
 jr_005_48d9:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $80
     ret z
 
@@ -1447,7 +1447,7 @@ jr_005_48d9:
 
 jr_005_4912:
     ld a, $06
-    ld [$c5a1], a
+    ld [wGameState], a
     xor a
     ld [$c5a2], a
     ld [$c72d], a
@@ -1518,7 +1518,7 @@ jr_005_4955:
     jp Jump_000_0165
 
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr z, jr_005_4995
 
@@ -1532,7 +1532,7 @@ jr_005_4955:
 
 jr_005_4995:
     call Call_005_5cb5
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $40
     jr z, jr_005_49b7
 
@@ -1551,7 +1551,7 @@ jr_005_4995:
 
 
 jr_005_49b7:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $80
     ret z
 
@@ -1599,7 +1599,7 @@ jr_005_49ee:
     ld e, $21
     call Call_000_015c
     ld a, $02
-    ld [$c5a1], a
+    ld [wGameState], a
     ld a, $01
     ld [$c5a2], a
     ret
@@ -1704,7 +1704,7 @@ jr_005_4a4f:
     ld a, $90
     ld [$c68c], a
     call Call_005_5da7
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr z, jr_005_4b3b
 
@@ -1771,7 +1771,7 @@ jr_005_4b1a:
 
 
 jr_005_4b3b:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $10
     jr z, jr_005_4b53
 
@@ -1790,7 +1790,7 @@ jr_005_4b4e:
 
 
 jr_005_4b53:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $20
     jr z, jr_005_4b6b
 
@@ -1809,7 +1809,7 @@ jr_005_4b66:
 
 
 jr_005_4b6b:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $40
     jr z, jr_005_4b80
 
@@ -1823,7 +1823,7 @@ jr_005_4b6b:
 
 
 jr_005_4b80:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $80
     jr z, jr_005_4b95
 
@@ -2067,7 +2067,7 @@ jr_005_4cc8:
     or a
     jr z, jr_005_4d12
 
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     and $44
     cp $44
     jr nz, jr_005_4d12
@@ -2118,7 +2118,7 @@ jr_005_4d2c:
     ret
 
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $08
     jr z, jr_005_4d7f
 
@@ -2140,7 +2140,7 @@ jr_005_4d2c:
 
 
 jr_005_4d7f:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr z, jr_005_4d8a
 
@@ -2402,7 +2402,7 @@ jr_005_4eba:
     xor a
     ld [$c5a2], a
     ld a, $08
-    ld [$c5a1], a
+    ld [wGameState], a
     ret
 
 
@@ -2523,7 +2523,7 @@ jr_005_4f96:
     xor a
     ld [$c5a2], a
     ld a, $08
-    ld [$c5a1], a
+    ld [wGameState], a
     ret
 
 
@@ -2601,13 +2601,13 @@ jr_005_4fe8:
     ld e, $21
     call Call_000_015c
     ld a, $02
-    ld [$c5a1], a
+    ld [wGameState], a
     ld a, $01
     ld [$c5a2], a
     ret
 
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $08
     jr z, jr_005_5073
 
@@ -2677,7 +2677,7 @@ jr_005_5073:
 
 
 Jump_005_5094:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr z, jr_005_50ba
 
@@ -2700,7 +2700,7 @@ Jump_005_5094:
 jr_005_50ba:
     call Call_005_50f1
     call Call_005_5123
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $10
     jr z, jr_005_50d8
 
@@ -2719,7 +2719,7 @@ jr_005_50d3:
 
 
 jr_005_50d8:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $20
     jr z, jr_005_50f0
 
@@ -2808,7 +2808,7 @@ Jump_005_515b:
 
 Jump_005_515e:
     call Call_005_5dd7
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     or a
     jr nz, jr_005_5174
 
@@ -2818,7 +2818,7 @@ Jump_005_515e:
     and $07
     ret nz
 
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     or a
     ret z
 
@@ -2826,7 +2826,7 @@ jr_005_5174:
     ld [$c7f1], a
     xor a
     ld [$c7f0], a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr z, jr_005_518b
 
@@ -2905,7 +2905,7 @@ jr_005_51d8:
 
 Jump_005_51ef:
 jr_005_51ef:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $04
     ret z
 
@@ -2919,7 +2919,7 @@ jr_005_51ef:
 
 
 Jump_005_5202:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     or a
     jr nz, jr_005_5215
 
@@ -2929,7 +2929,7 @@ Jump_005_5202:
     and $07
     ret nz
 
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     or a
     ret z
 
@@ -2942,7 +2942,7 @@ jr_005_5215:
     ld [$c5ac], a
     ld a, $03
     ld [$c6c7], a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr z, jr_005_5238
 
@@ -3068,7 +3068,7 @@ jr_005_52d4:
 
 Jump_005_52db:
     call Call_005_5e6e
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     or a
     jr nz, jr_005_52f8
 
@@ -3082,7 +3082,7 @@ Jump_005_52db:
     and $07
     ret nz
 
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     or a
     ret z
 
@@ -3090,11 +3090,11 @@ Jump_005_52db:
 
 jr_005_52f8:
     ld b, a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $f0
     jr z, jr_005_5306
 
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     and $03
     or b
     jr jr_005_5307
@@ -3627,11 +3627,11 @@ Jump_005_55b5:
 
 
 jr_005_5617:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $09
     jp nz, Jump_005_568d
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $10
     jr z, jr_005_5635
 
@@ -3649,7 +3649,7 @@ jr_005_5632:
     jr jr_005_564a
 
 jr_005_5635:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $20
     ret z
 
@@ -3732,7 +3732,7 @@ Jump_005_568d:
     ld e, a
     add hl, de
     ld a, [hl]
-    ld [$c5a1], a
+    ld [wGameState], a
     xor a
     ld [$c5a2], a
     ret
@@ -3777,11 +3777,11 @@ Jump_005_56e2:
 
     call Call_005_5c2a
     call Call_005_5bc8
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $02
     jp nz, Jump_005_5730
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jp z, Jump_005_5771
 
@@ -3839,7 +3839,7 @@ Jump_005_5762:
 
 
 Jump_005_5771:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $40
     jp z, Jump_005_5791
 
@@ -3857,7 +3857,7 @@ Jump_005_5771:
 
 
 Jump_005_5791:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $80
     jp z, Jump_005_57b1
 
@@ -3875,14 +3875,14 @@ Jump_005_5791:
 
 
 Jump_005_57b1:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $10
     jp z, Jump_005_57bb
 
     call Call_005_5a90
 
 Jump_005_57bb:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $20
     jp z, Jump_005_57c5
 
@@ -3932,7 +3932,7 @@ Jump_005_57d7:
     jp Jump_000_0165
 
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr z, jr_005_582f
 
@@ -3953,7 +3953,7 @@ jr_005_5822:
 
 
 jr_005_582f:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $30
     jr z, jr_005_586c
 
@@ -4195,7 +4195,7 @@ jr_005_5964:
 
 jr_005_59ab:
     ld a, $06
-    ld [$c5a1], a
+    ld [wGameState], a
     ld a, $0c
     ld [$c5a2], a
     ret
@@ -4230,7 +4230,7 @@ jr_005_59c0:
     jp Jump_000_0165
 
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr nz, jr_005_59f0
 
@@ -4263,7 +4263,7 @@ jr_005_59f0:
     ld [$c6db], a
     call Call_005_61c4
     ld a, $06
-    ld [$c5a1], a
+    ld [wGameState], a
     ld a, $0c
     ld [$c5a2], a
     ret
@@ -4318,7 +4318,7 @@ jr_005_59f0:
     pop af
     ld [$c67f], a
     ld a, $01
-    ld [$c5a1], a
+    ld [wGameState], a
     xor a
     ld [$c5a2], a
     ret
@@ -4996,7 +4996,7 @@ Jump_005_5e54:
 
 
 Call_005_5e6e:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $04
     jr z, jr_005_5e81
 
@@ -5023,7 +5023,7 @@ jr_005_5e81:
     ld a, [$c68d]
     ld hl, $c224
     ld [hl], a
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     and $02
     jr z, jr_005_5ea5
 
@@ -5083,7 +5083,7 @@ Call_005_5ec5:
 
 Call_005_5f16:
 Jump_005_5f16:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jp z, Jump_005_5faf
 
@@ -5162,7 +5162,7 @@ Jump_005_5f57:
 
 
 Jump_005_5faf:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $30
     jr z, jr_005_5fec
 
@@ -6007,7 +6007,7 @@ Jump_005_67b0:
 
     ld a, $01
     ld [$c5c9], a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $0f
     jp nz, Jump_005_6820
 
@@ -6033,7 +6033,7 @@ jr_005_67e0:
     ld [hl], $01
     ld hl, $c220
     ld [hl], $00
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $80
     ret z
 
@@ -6061,7 +6061,7 @@ jr_005_680c:
     ld [hl], $00
     ld hl, $c220
     ld [hl], $01
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $40
     ret z
 
@@ -6095,7 +6095,7 @@ Jump_005_6820:
 
 jr_005_6843:
     ld a, $01
-    ld [$c5a1], a
+    ld [wGameState], a
     xor a
     ld [$c5a2], a
     ret
@@ -6146,7 +6146,7 @@ jr_005_6868:
     or a
     ret z
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $08
     jr z, jr_005_68a5
 
@@ -6158,7 +6158,7 @@ jr_005_6868:
 
 
 jr_005_68a5:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     jr z, jr_005_68b0
 
@@ -6216,7 +6216,7 @@ jr_005_68e4:
     xor a
     ld [$c5a2], a
     ld a, $01
-    ld [$c5a1], a
+    ld [wGameState], a
     ret
 
 
@@ -6228,7 +6228,7 @@ jr_005_68e4:
     ld e, $15
     call Call_000_015c
     ld a, $03
-    ld [$c5a1], a
+    ld [wGameState], a
     ld a, $01
     ld [$c5a2], a
     ld a, [$c67f]

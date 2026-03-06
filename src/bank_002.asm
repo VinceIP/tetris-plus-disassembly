@@ -665,7 +665,7 @@ Jump_002_4379:
     or a
     jp nz, Jump_002_4379
 
-    ld a, [$c0fe]
+    ld a, [wLevelTicker]
     ld b, a
     ld hl, $001e
     add hl, de
@@ -777,17 +777,17 @@ Jump_002_43e5:
 Jump_002_4435:
     ld a, $98
     ld [hl], a
-    ld a, [$c0fe]
+    ld a, [wLevelTicker]
     ld b, $44
     sub b
-    ld [$c0fe], a
+    ld [wLevelTicker], a
     ld hl, $001e
     add hl, de
     ld [hl], $00
     ld hl, $c60b
     ld [hl], $01
     call Call_000_01ec
-    ld hl, $c0fd
+    ld hl, wCurrentLevel
     ld a, [hl]
     inc a
     cp $1f
@@ -2001,7 +2001,7 @@ Call_002_49b4:
     ret
 
 
-    ld hl, $c5f3
+    ld hl, wScore_HundredThousandsPlace
     ld de, $a104
     ld c, $03
 
@@ -2026,12 +2026,12 @@ jr_002_4a06:
 
 jr_002_4a09:
     ld hl, $a104
-    ld de, $c5f3
-    ld a, [$c5f3]
+    ld de, wScore_HundredThousandsPlace
+    ld a, [wScore_HundredThousandsPlace]
     ld [hl+], a
-    ld a, [$c5f4]
+    ld a, [wScore_HundredsPlace]
     ld [hl+], a
-    ld a, [$c5f5]
+    ld a, [wScore_TensPlace]
     ld [hl+], a
     ld a, $8b
     ld [hl+], a
@@ -3076,7 +3076,7 @@ jr_002_4fab:
     inc de
     ld a, l
     ld [de], a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $33
     jr z, jr_002_5005
 
@@ -3094,7 +3094,7 @@ jr_002_4fab:
     cp $03
     jr nz, jr_002_4fe2
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $10
     jp nz, Jump_002_5077
 
@@ -3136,7 +3136,7 @@ jr_002_4feb:
 
 
 jr_002_5005:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $c0
     jr z, jr_002_501c
 
@@ -3144,7 +3144,7 @@ jr_002_5005:
     ldh [$ffa1], a
     ld a, $00
     ld [$c63e], a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $80
     jr nz, jr_002_5034
 
@@ -3157,7 +3157,7 @@ jr_002_501c:
     and $07
     jp nz, Jump_002_5077
 
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     and $c0
     jp z, Jump_002_5077
 
@@ -3350,7 +3350,7 @@ jr_002_512c:
     inc de
     ld a, l
     ld [de], a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $33
     jr z, jr_002_5186
 
@@ -3368,7 +3368,7 @@ jr_002_512c:
     cp $03
     jr nz, jr_002_5163
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $10
     jp nz, Jump_002_51f8
 
@@ -3410,7 +3410,7 @@ jr_002_516c:
 
 
 jr_002_5186:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $c0
     jr z, jr_002_519d
 
@@ -3418,7 +3418,7 @@ jr_002_5186:
     ldh [$ffa1], a
     ld a, $00
     ld [$c63e], a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $80
     jr nz, jr_002_51b5
 
@@ -3431,7 +3431,7 @@ jr_002_519d:
     and $07
     jp nz, Jump_002_51f8
 
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     and $c0
     jp z, Jump_002_51f8
 

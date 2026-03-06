@@ -2531,12 +2531,12 @@ jr_001_50b8:
     ret
 
 
-Call_001_50cb:
+Call_001_50cb: ; block movement code?
     ld a, [$c5db]
     and $01
     ret z
 
-    ld hl, $c0c3
+    ld hl, wBlockRowIndex
     ld a, [hl]
     ld c, a
     ld hl, $5169
@@ -2571,7 +2571,7 @@ Call_001_50cb:
     inc bc
     ld a, l
     ld [bc], a
-    ld hl, $c0c2
+    ld hl, wBlockColumnIndex
     ld a, [hl]
     ld c, a
     ld b, $00
@@ -3275,12 +3275,12 @@ jr_001_5472:
 
     ret
 
-
+    ; unreachable?
     ld a, [$c64a]
     or a
     jp nz, Jump_001_550a
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $08
     jp z, Jump_001_5562
 
@@ -3445,7 +3445,7 @@ Call_001_5566:
     cp $00
     jr nz, jr_001_5572
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $08
     ret
 
@@ -3467,7 +3467,7 @@ jr_001_5572:
     ld c, a
     add hl, bc
     ld [hl], $00
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $c0
     jr z, jr_001_55a1
 
@@ -3502,12 +3502,12 @@ jr_001_55a1:
     cp $1f
     jp nz, Jump_001_55db
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $02
     jp nz, Jump_001_55fe
 
 Jump_001_55db:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $08
     ret z
 
@@ -3562,11 +3562,11 @@ Jump_001_55fe:
 
 
 Jump_001_563d:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $20
     jr nz, jr_001_5655
 
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     and $20
     jr z, jr_001_566d
 
@@ -3591,11 +3591,11 @@ jr_001_5655:
 
 
 jr_001_566d:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $10
     jr nz, jr_001_5684
 
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     and $10
     jr z, jr_001_5699
 
@@ -3619,11 +3619,11 @@ jr_001_5684:
     jr jr_001_56f0
 
 jr_001_5699:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $40
     jr nz, jr_001_56b0
 
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     and $40
     jr z, jr_001_56c6
 
@@ -3647,11 +3647,11 @@ jr_001_56b0:
     jr jr_001_56f0
 
 jr_001_56c6:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $80
     jr nz, jr_001_56dd
 
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     and $80
     jr z, jr_001_56f0
 
@@ -3728,7 +3728,7 @@ jr_001_5723:
     ld b, $03
     ld c, $01
     call Call_001_5e20
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $02
     jr z, jr_001_5762
 
@@ -3753,7 +3753,7 @@ jr_001_5723:
 
 
 jr_001_5762:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $08
     ret z
 
@@ -4014,7 +4014,7 @@ jr_001_57da:
 
 
 jr_001_58d5:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $08
     ret z
 
@@ -4090,7 +4090,7 @@ Jump_001_5938:
     cp $d0
     jr z, jr_001_594b
 
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $08
     ret z
 
@@ -6922,7 +6922,7 @@ jr_001_6953:
     ld a, $22
 
 jr_001_6959:
-    ld hl, $c0fe
+    ld hl, wLevelTicker
     ld b, [hl]
     add b
     ld [hl], a
@@ -6940,7 +6940,7 @@ jr_001_6959:
 
     ld hl, $4cff
     ld b, $00
-    ld a, [$c0fd]
+    ld a, [wCurrentLevel]
     ld c, a
     sla c
     rl b
@@ -6957,7 +6957,7 @@ jr_001_6959:
     ret z
 
     ld hl, $4d65
-    ld a, [$c0fd]
+    ld a, [wCurrentLevel]
     ld b, $00
     ld c, a
     sla c
@@ -7023,7 +7023,7 @@ jr_001_6959:
     ret
 
 
-    ld hl, $c0fd
+    ld hl, wCurrentLevel
     ld a, [hl]
     ld hl, $4f93
     ld b, $00
@@ -7634,7 +7634,7 @@ Jump_001_6d03:
     ld hl, $0015
     add hl, de
     ld [hl], a
-    ldh a, [$ff8c]
+    ldh a, [hInputHeld]
     swap a
     bit 1, a
     jp z, Jump_001_6d2f
@@ -7678,7 +7678,7 @@ Jump_001_6d2f:
     ld [hl], $14
 
 jr_001_6d57:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     swap a
     bit 1, a
     jp z, Jump_001_6d79
@@ -7851,7 +7851,7 @@ jr_001_6e62:
 
     ld a, [$c691]
     ld b, a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and b
     jp z, Jump_001_6e9e
 
@@ -7888,7 +7888,7 @@ jr_001_6e62:
 Jump_001_6e9e:
     ld a, [$c690]
     ld b, a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and b
     ret z
 
@@ -9457,7 +9457,7 @@ Call_001_76bc:
 
 
 jr_001_76ee:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $20
     jr z, jr_001_7707
 
@@ -9475,7 +9475,7 @@ jr_001_7701:
 
 
 jr_001_7707:
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $10
     jr z, jr_001_771e
 
@@ -9500,7 +9500,7 @@ jr_001_771e:
     sla a
     add $30
     ld [$c242], a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
     and $01
     ret z
 
@@ -9667,7 +9667,7 @@ jr_001_780b:
 
     ld a, [$c83f]
     ld b, a
-    ld a, [$c0fd]
+    ld a, [wCurrentLevel]
     cp b
     ret z
 

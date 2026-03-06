@@ -4381,7 +4381,7 @@ jr_007_528a:
     rst $38
     rst $38
     ldh [$ffdd], a
-    ldh a, [$ff8d]
+    ldh a, [hInputPressed]
 
 jr_007_5401:
     ret c
